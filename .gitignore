@@ -1,0 +1,7 @@
+# E*TRADE API client specific
+config.ini
+
+# Python general
+venv/
+__pycache__/
+*.log
