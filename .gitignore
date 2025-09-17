@@ -5,3 +5,10 @@ config.ini
 venv/
 __pycache__/
 *.log
+
+# IDE and editor files
+.*
+!.gitignore
+
+# Web bundles
+web-bundles/

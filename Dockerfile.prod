@@ -1,0 +1,54 @@
+# Production Dockerfile with optimizations
+FROM python:3.10-slim as production
+
+# Set environment variables for production
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    ENVIRONMENT=production
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set work directory
+WORKDIR /app
+
+# Copy requirements first for better caching
+COPY requirements.txt requirements-dev.txt ./
+
+# Install only production dependencies
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir uvicorn[standard] gunicorn
+
+# Copy application code
+COPY . .
+
+# Remove development files
+RUN rm -rf tests/ docs/ *.md requirements-dev.txt && \
+    find . -name "*.pyc" -delete && \
+    find . -name "__pycache__" -delete
+
+# Create necessary directories and set permissions
+RUN mkdir -p /app/logs /app/data && \
+    chmod +x run_server.py
+
+# Create non-root user
+RUN useradd --create-home --shell /bin/bash --uid 1000 app && \
+    chown -R app:app /app
+USER app
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Expose port
+EXPOSE 8000
+
+# Use gunicorn for production
+CMD ["gunicorn", "etrade_python_client.web.main:app", "-w", "2", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--access-logfile", "-", "--error-logfile", "-"]

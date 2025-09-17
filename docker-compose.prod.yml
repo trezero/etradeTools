@@ -1,0 +1,193 @@
+version: '3.8'
+
+services:
+  # Redis for production
+  redis:
+    image: redis:7-alpine
+    container_name: etrade_redis_prod
+    restart: always
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_prod_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Python backend API
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: etrade_backend_prod
+    restart: always
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:///data/trading_assistant.db
+      - PYTHONPATH=/app
+      - ENVIRONMENT=production
+    volumes:
+      - ./data:/app/data:rw
+      - ./logs:/app/logs:rw
+      - ./etrade_python_client/config.ini:/app/etrade_python_client/config.ini:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # Celery worker for production
+  celery_worker:
+    build: 
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: etrade_celery_worker_prod
+    restart: always
+    command: ["celery", "-A", "etrade_python_client.services.celery_app", "worker", "--loglevel=info", "--concurrency=2"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:///data/trading_assistant.db
+      - PYTHONPATH=/app
+      - ENVIRONMENT=production
+    volumes:
+      - ./data:/app/data:rw
+      - ./logs:/app/logs:rw
+      - ./etrade_python_client/config.ini:/app/etrade_python_client/config.ini:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.125'
+          memory: 128M
+
+  # Celery beat scheduler
+  celery_beat:
+    build: 
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: etrade_celery_beat_prod
+    restart: always
+    command: ["celery", "-A", "etrade_python_client.services.celery_app", "beat", "--loglevel=info"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:///data/trading_assistant.db
+      - PYTHONPATH=/app
+      - ENVIRONMENT=production
+    volumes:
+      - ./data:/app/data:rw
+      - ./logs:/app/logs:rw
+      - ./etrade_python_client/config.ini:/app/etrade_python_client/config.ini:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+
+  # React frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: production
+    container_name: etrade_frontend_prod
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: etrade_nginx_prod
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx:rw
+    depends_on:
+      - frontend
+      - backend
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  redis_prod_data:
+    driver: local
+
+networks:
+  default:
+    name: etrade_prod_network

@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # Redis for development
+  redis:
+    image: redis:7-alpine
+    container_name: etrade_redis_dev
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_dev_data:/data
+    command: redis-server --appendonly yes
+
+  # Python backend with development settings
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: etrade_backend_dev
+    ports:
+      - "8002:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:///data/trading_assistant.db
+      - PYTHONPATH=/app
+      - DEBUG=1
+    volumes:
+      - .:/app
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      - redis
+    command: ["python", "run_server.py"]
+    stdin_open: true
+    tty: true
+
+  # Celery worker for development
+  celery_worker:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: etrade_celery_worker_dev
+    command: ["celery", "-A", "etrade_python_client.services.celery_app", "worker", "--loglevel=debug"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:///data/trading_assistant.db
+      - PYTHONPATH=/app
+      - DEBUG=1
+    volumes:
+      - .:/app
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      - redis
+      - backend
+
+  # React frontend in development mode
+  frontend_dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: etrade_frontend_dev
+    ports:
+      - "3003:3000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_API_URL=http://localhost:8002
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+
+volumes:
+  redis_dev_data:
+    driver: local

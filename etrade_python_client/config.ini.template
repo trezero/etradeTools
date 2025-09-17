@@ -1,5 +1,37 @@
 [DEFAULT]
 CONSUMER_KEY = YOUR_CONSUMER_KEY
 CONSUMER_SECRET = YOUR_CONSUMER_SECRET
-SANDBOX_BASE_URL=https://apisb.etrade.com
-PROD_BASE_URL=https://api.etrade.com
+SANDBOX_BASE_URL = https://apisb.etrade.com
+PROD_BASE_URL = https://api.etrade.com
+
+[DATABASE]
+DATABASE_URL = sqlite:///./trading_assistant.db
+BACKUP_LOCATION = ./backups/
+BACKUP_RETENTION_COUNT = 5
+DATA_RETENTION_DAYS = 30
+
+[AI_SERVICES]
+GEMINI_API_KEY = your_actual_gemini_api_key_here
+MAX_TRADE_AMOUNT = 1000.00
+AI_CONFIDENCE_THRESHOLD = 0.7
+AUTO_TRADING_ENABLED = false
+
+[NOTIFICATIONS]
+smtp_host = smtp.gmail.com
+smtp_port = 587
+smtp_username = your_email@example.com
+smtp_password = your_app_password
+smtp_use_tls = true
+slack_bot_token = your_slack_bot_token
+slack_channel = #trading-alerts
+
+[WEB_APP]
+HOST = 0.0.0.0
+PORT = 8000
+DEBUG = false
+SECRET_KEY = your_secret_key_for_sessions
+
+[CELERY]
+BROKER_URL = redis://localhost:6379/0
+RESULT_BACKEND = redis://localhost:6379/0
+TIMEZONE = America/Los_Angeles

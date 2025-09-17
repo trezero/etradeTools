@@ -1,0 +1,115 @@
+version: '3.8'
+
+services:
+  # Redis for Celery message broker
+  redis:
+    image: redis:7-alpine
+    container_name: etrade_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Python backend API
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: etrade_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:///data/trading_assistant.db
+      - PYTHONPATH=/app
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./etrade_python_client/config.ini:/app/etrade_python_client/config.ini:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Celery worker for background tasks
+  celery_worker:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: etrade_celery_worker
+    restart: unless-stopped
+    command: ["celery", "-A", "etrade_python_client.services.celery_app", "worker", "--loglevel=info"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:///data/trading_assistant.db
+      - PYTHONPATH=/app
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./etrade_python_client/config.ini:/app/etrade_python_client/config.ini:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+
+  # Celery beat scheduler
+  celery_beat:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: etrade_celery_beat
+    restart: unless-stopped
+    command: ["celery", "-A", "etrade_python_client.services.celery_app", "beat", "--loglevel=info"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:///data/trading_assistant.db
+      - PYTHONPATH=/app
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./etrade_python_client/config.ini:/app/etrade_python_client/config.ini:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+
+  # React frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: etrade_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  default:
+    name: etrade_network
