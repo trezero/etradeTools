@@ -5,31 +5,24 @@ import {
   Card,
   CardContent,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
   Box,
   Chip,
   CircularProgress,
-  IconButton,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
-  MenuItem,
-  Tooltip,
-  Badge
+  MenuItem
 } from '@mui/material';
 import {
-  Psychology,
-  ThumbUp,
-  ThumbDown,
-  Feedback,
   TrendingUp,
   TrendingDown,
-  PauseCircle
+  PauseCircle,
+  ThumbUp,
+  ThumbDown,
+  Psychology
 } from '@mui/icons-material';
 
 import { AIDecision } from '../types';
@@ -181,109 +174,151 @@ const AIDecisionsWidget: React.FC<AIDecisionsWidgetProps> = ({
 
   return (
     <>
-      <Card>
-        <CardContent>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-            <Typography variant="h6">
-              <Psychology sx={{ mr: 1 }} />
+      <Card sx={{ bgcolor: 'background.paper', display: 'flex', flexDirection: 'column' }}>
+        <CardContent sx={{ p: 3, flex: 1 }}>
+          <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
               AI Decisions
             </Typography>
             {pendingFeedback > 0 && (
-              <Badge badgeContent={pendingFeedback} color="primary">
-                <Chip
-                  label="Feedback Needed"
-                  color="primary"
-                  size="small"
-                  variant="outlined"
-                />
-              </Badge>
+              <Button 
+                variant="text" 
+                size="small"
+                sx={{ 
+                  color: 'primary.main',
+                  '&:hover': { bgcolor: 'transparent' },
+                  fontSize: '0.875rem'
+                }}
+              >
+                Feedback Needed
+              </Button>
             )}
           </Box>
 
-          <List dense>
-            {decisions.map((decision) => (
-              <ListItem
+          <Box sx={{ 
+            '& > *:not(:last-child)': { mb: 2 },
+            overflowY: 'auto',
+            flex: 1,
+            pr: 1
+          }}>
+            {decisions.slice(0, 2).map((decision) => (
+              <Box
                 key={decision.decision_id}
                 sx={{
-                  border: 1,
-                  borderColor: 'grey.200',
+                  p: 2,
                   borderRadius: 1,
-                  mb: 1,
-                  bgcolor: 'background.paper'
+                  bgcolor: 'rgba(128, 128, 128, 0.1)'
                 }}
               >
-                <ListItemText
-                  primary={
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                      <Box display="flex" alignItems="center" gap={1}>
-                        {getDecisionIcon(decision.decision_type)}
-                        <Typography variant="body1" fontWeight="medium">
-                          {decision.symbol}
-                        </Typography>
-                        <Chip
-                          label={decision.decision_type}
-                          color={getDecisionColor(decision.decision_type)}
-                          size="small"
-                        />
-                      </Box>
-                      <Box display="flex" alignItems="center" gap={1}>
-                        {getFeedbackIcon(decision.user_feedback)}
-                        <Tooltip title="Provide Feedback">
-                          <IconButton
-                            size="small"
-                            onClick={() => handleFeedbackClick(decision)}
-                            color={decision.user_feedback ? 'default' : 'primary'}
-                          >
-                            <Feedback fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    </Box>
-                  }
-                  secondary={
-                    <Box>
-                      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                        <Typography variant="caption" color="text.secondary">
-                          Confidence: {formatPercentage(decision.confidence_score)}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {timeAgo(decision.created_at)}
-                        </Typography>
-                      </Box>
-                      
-                      <Box display="flex" alignItems="center" gap={1} mb={1}>
-                        <Chip
-                          label={`${formatPercentage(decision.confidence_score)} confident`}
-                          color={getConfidenceColor(decision.confidence_score)}
-                          size="small"
-                          variant="outlined"
-                        />
-                        {decision.price_target && (
-                          <Chip
-                            label={`Target: ${formatCurrency(decision.price_target)}`}
-                            size="small"
-                            variant="outlined"
-                          />
-                        )}
-                      </Box>
+                {/* Header with icon and decision */}
+                <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
+                  <Box display="flex" alignItems="center" gap={1}>
+                    {getDecisionIcon(decision.decision_type)}
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                      {decision.symbol}
+                    </Typography>
+                    <Chip
+                      label={decision.decision_type}
+                      sx={{
+                        bgcolor: decision.decision_type === 'BUY' ? 'success.main' : 'error.main',
+                        color: decision.decision_type === 'BUY' ? 'black' : 'white',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        height: 24
+                      }}
+                      size="small"
+                    />
+                  </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    {timeAgo(decision.created_at)}
+                  </Typography>
+                </Box>
 
-                      <Typography variant="body2" color="text.secondary">
-                        {decision.rationale}
+                {/* Confidence indicator with circular progress */}
+                <Box display="flex" alignItems="center" sx={{ mb: 2 }}>
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      display: 'inline-flex',
+                      mr: 2
+                    }}
+                  >
+                    <CircularProgress
+                      variant="determinate"
+                      value={decision.confidence_score * 100}
+                      size={48}
+                      thickness={4}
+                      sx={{
+                        color: 'success.main',
+                        '& .MuiCircularProgress-circle': {
+                          strokeLinecap: 'round',
+                        },
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        position: 'absolute',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'column'
+                      }}
+                    >
+                      <Typography
+                        variant="caption"
+                        sx={{ 
+                          fontSize: '0.625rem',
+                          fontWeight: 'bold',
+                          lineHeight: 1
+                        }}
+                      >
+                        {Math.round(decision.confidence_score * 100)}%
                       </Typography>
-
-                      {decision.user_feedback && decision.feedback_notes && (
-                        <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-                          Your feedback: {decision.feedback_notes}
-                        </Typography>
-                      )}
+                      <Typography
+                        variant="caption"
+                        sx={{ 
+                          fontSize: '0.5rem',
+                          lineHeight: 1
+                        }}
+                      >
+                        confident
+                      </Typography>
                     </Box>
-                  }
-                />
-              </ListItem>
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    {decision.price_target && (
+                      <Typography variant="body2" sx={{ mb: 0.5 }}>
+                        Target: <Typography component="span" sx={{ 
+                          fontFamily: '"IBM Plex Mono", monospace',
+                          fontWeight: 600
+                        }}>
+                          {formatCurrency(decision.price_target)}
+                        </Typography>
+                      </Typography>
+                    )}
+                    <Typography variant="caption" color="text.secondary">
+                      {decision.rationale}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
             ))}
-          </List>
+          </Box>
 
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
+          <Typography 
+            variant="caption" 
+            color="text.secondary" 
+            sx={{ 
+              mt: 2, 
+              display: 'block',
+              textAlign: 'center',
+              fontSize: '0.75rem'
+            }}
+          >
             Showing {decisions.length} recent decisions
           </Typography>
         </CardContent>

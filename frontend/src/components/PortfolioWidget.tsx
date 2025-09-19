@@ -7,16 +7,11 @@ import {
   Typography,
   Box,
   Chip,
-  CircularProgress,
-  List,
-  ListItem,
-  ListItemText,
-  Divider
+  CircularProgress
 } from '@mui/material';
 import {
   AccountBalance,
-  TrendingUp,
-  TrendingDown
+  ArrowUpward
 } from '@mui/icons-material';
 
 import { PortfolioAnalytics } from '../types';
@@ -45,17 +40,6 @@ const PortfolioWidget: React.FC<PortfolioWidgetProps> = ({ data, loading }) => {
     }).format(percentage / 100);
   };
 
-  const getDailyChangeColor = (change: number): 'success' | 'error' | 'default' => {
-    if (change > 0) return 'success';
-    if (change < 0) return 'error';
-    return 'default';
-  };
-
-  const getDailyChangeIcon = (change: number) => {
-    if (change > 0) return <TrendingUp color="success" fontSize="small" />;
-    if (change < 0) return <TrendingDown color="error" fontSize="small" />;
-    return null;
-  };
 
   if (loading) {
     return (
@@ -102,76 +86,113 @@ const PortfolioWidget: React.FC<PortfolioWidgetProps> = ({ data, loading }) => {
     .sort((a, b) => b.market_value - a.market_value);
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          <AccountBalance sx={{ mr: 1 }} />
-          Portfolio Summary
-        </Typography>
-
-        {/* Total Value */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h4" component="div" gutterBottom>
-            {formatCurrency(data.total_value)}
+    <Card sx={{ bgcolor: 'background.paper' }}>
+      <CardContent sx={{ p: 3 }}>
+        {/* Header with Market Sentiment */}
+        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            Portfolio Summary
           </Typography>
-          
-          <Box display="flex" alignItems="center" gap={1}>
-            {getDailyChangeIcon(data.daily_change)}
-            <Chip
-              label={`${data.daily_change > 0 ? '+' : ''}${formatCurrency(data.daily_change)}`}
-              color={getDailyChangeColor(data.daily_change)}
-              size="small"
-            />
-            <Typography variant="body2" color="text.secondary">
-              ({dailyChangePercent > 0 ? '+' : ''}{dailyChangePercent.toFixed(2)}%) today
-            </Typography>
-          </Box>
+          <Chip
+            label="Bearish Market"
+            sx={{
+              bgcolor: 'rgba(244, 70, 93, 0.2)',
+              color: 'error.main',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              border: 'none'
+            }}
+            size="small"
+          />
         </Box>
 
-        <Divider sx={{ mb: 2 }} />
+        {/* Total Portfolio Value */}
+        <Typography 
+          variant="h3" 
+          sx={{ 
+            fontFamily: '"IBM Plex Mono", monospace',
+            fontWeight: 'bold',
+            mb: 1,
+            color: 'text.primary'
+          }}
+        >
+          {formatCurrency(data.total_value)}
+        </Typography>
+        
+        {/* Daily Change */}
+        <Box display="flex" alignItems="center" gap={1} sx={{ mb: 3 }}>
+          <ArrowUpward 
+            sx={{ 
+              color: 'success.main', 
+              fontSize: 16 
+            }} 
+          />
+          <Typography
+            sx={{
+              fontFamily: '"IBM Plex Mono", monospace',
+              color: data.daily_change >= 0 ? 'success.main' : 'error.main',
+              ml: 0.5
+            }}
+          >
+            {data.daily_change > 0 ? '+' : ''}{formatCurrency(data.daily_change)} ({dailyChangePercent > 0 ? '+' : ''}{dailyChangePercent.toFixed(2)}%) today
+          </Typography>
+        </Box>
 
         {/* Top Holdings */}
-        <Typography variant="subtitle2" gutterBottom>
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            fontWeight: 600, 
+            mb: 2,
+            fontSize: '1rem'
+          }}
+        >
           Top Holdings
         </Typography>
         
-        <List dense>
-          {sortedPositions.slice(0, 5).map(({ symbol, quantity, current_price, market_value }) => (
-            <ListItem key={symbol} disablePadding>
-              <ListItemText
-                primary={
-                  <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant="body2" fontWeight="medium">
-                      {symbol}
-                    </Typography>
-                    <Typography variant="body2">
-                      {formatCurrency(market_value)}
-                    </Typography>
-                  </Box>
-                }
-                secondary={
-                  <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant="caption" color="text.secondary">
-                      {quantity} shares @ {formatCurrency(current_price)}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {formatPercentage(market_value, data.total_value)}
-                    </Typography>
-                  </Box>
-                }
-              />
-            </ListItem>
+        <Box sx={{ '& > *:not(:last-child)': { mb: 2 } }}>
+          {sortedPositions.slice(0, 2).map(({ symbol, quantity, current_price, market_value }) => (
+            <Box key={symbol}>
+              <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                <Box>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mb: 0.5 }}>
+                    {symbol}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {quantity} shares @ {formatCurrency(current_price)}
+                  </Typography>
+                </Box>
+                <Box sx={{ textAlign: 'right' }}>
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      fontFamily: '"IBM Plex Mono", monospace',
+                      fontWeight: 500,
+                      mb: 0.5
+                    }}
+                  >
+                    {formatCurrency(market_value)}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {formatPercentage(market_value, data.total_value)}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
           ))}
-        </List>
+        </Box>
 
-        {sortedPositions.length > 5 && (
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-            +{sortedPositions.length - 5} more positions
-          </Typography>
-        )}
-
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
-          Account: {data.account_id} • Updated: {new Date(data.timestamp).toLocaleString()}
+        {/* Account Info */}
+        <Typography 
+          variant="caption" 
+          color="text.secondary" 
+          sx={{ 
+            mt: 3, 
+            display: 'block',
+            fontSize: '0.75rem'
+          }}
+        >
+          Account: {data.account_id} - Updated: {new Date(data.timestamp).toLocaleString()}
         </Typography>
       </CardContent>
     </Card>

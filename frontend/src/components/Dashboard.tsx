@@ -21,6 +21,10 @@ import {
   Settings,
   Psychology,
   ShowChart,
+  TrendingUp,
+  AccountBalanceWallet,
+  Link,
+  Chat,
 } from '@mui/icons-material';
 
 import { MarketOverview, PortfolioAnalytics, AIDecision, WatchlistItem } from '../types';
@@ -169,31 +173,101 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, bgcolor: 'background.default', minHeight: '100vh' }}>
-      {/* App Bar */}
-      <AppBar position="static" sx={{ bgcolor: 'primary.main' }}>
-        <Toolbar>
-          <Psychology sx={{ mr: 2 }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+    <Box sx={{ 
+      flexGrow: 1, 
+      bgcolor: 'background.default', 
+      minHeight: '100vh',
+      p: 2 
+    }}>
+      {/* Modern App Bar */}
+      <AppBar 
+        position="static" 
+        sx={{ 
+          bgcolor: 'primary.main',
+          borderRadius: '0.5rem',
+          mb: 2,
+          position: 'relative',
+          width: '100%',
+          mx: 0
+        }}
+      >
+        <Toolbar sx={{ px: 3 }}>
+          <TrendingUp sx={{ mr: 2, color: 'white' }} />
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
             AI Trading Assistant
           </Typography>
           
-          <Chip 
-            label={connectionStatus}
-            color={getConnectionStatusColor()}
-            size="small"
-            sx={{ mr: 2 }}
-          />
-          
-          <IconButton color="inherit" onClick={handleDecisionNotificationClick}>
-            <Badge badgeContent={newDecisionCount} color="error">
-              <Notifications />
-            </Badge>
-          </IconButton>
-          
-          <IconButton color="inherit">
-            <Settings />
-          </IconButton>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {/* Connection Status with animated indicator */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box
+                sx={{
+                  position: 'relative',
+                  width: 12,
+                  height: 12,
+                }}
+              >
+                {connectionStatus === 'connecting' && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '50%',
+                      bgcolor: 'success.main',
+                      opacity: 0.75,
+                      animation: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
+                      '@keyframes ping': {
+                        '75%, 100%': {
+                          transform: 'scale(2)',
+                          opacity: 0,
+                        },
+                      },
+                    }}
+                  />
+                )}
+                <Box
+                  sx={{
+                    position: 'relative',
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '50%',
+                    bgcolor: connectionStatus === 'connected' ? 'success.main' : 
+                             connectionStatus === 'connecting' ? 'warning.main' : 'error.main',
+                  }}
+                />
+              </Box>
+              <Typography variant="body2" sx={{ color: 'white', fontWeight: 500 }}>
+                {connectionStatus === 'connected' ? 'Connected' : 
+                 connectionStatus === 'connecting' ? 'Connecting' : 'Disconnected'}
+              </Typography>
+            </Box>
+            
+            <IconButton 
+              color="inherit" 
+              onClick={handleDecisionNotificationClick}
+              sx={{ 
+                p: 1.5,
+                borderRadius: '50%',
+                '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
+              }}
+            >
+              <Badge badgeContent={newDecisionCount} color="error">
+                <Notifications />
+              </Badge>
+            </IconButton>
+            
+            <IconButton 
+              color="inherit"
+              sx={{ 
+                p: 1.5,
+                borderRadius: '50%',
+                '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
+              }}
+            >
+              <Settings />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
 
@@ -205,10 +279,10 @@ const Dashboard: React.FC = () => {
       )}
 
       {/* Main Dashboard Grid */}
-      <Box sx={{ p: 3 }}>
+      <Box>
         <Grid container spacing={3}>
-          {/* Market Overview */}
-          <Grid xs={12} lg={8}>
+          {/* Market Overview - Full Width */}
+          <Grid xs={12}>
             <MarketOverviewWidget data={marketOverview} loading={loading} />
           </Grid>
 
@@ -217,98 +291,71 @@ const Dashboard: React.FC = () => {
             <PortfolioWidget data={portfolio} loading={loading} />
           </Grid>
 
-          {/* Watchlist */}
-          <Grid xs={12} lg={6}>
-            <WatchlistWidget data={watchlist} loading={loading} />
+          {/* Watchlist and AI Decisions */}
+          <Grid xs={12} lg={8}>
+            <Grid container spacing={3}>
+              {/* Watchlist */}
+              <Grid xs={12} md={6}>
+                <WatchlistWidget data={watchlist} loading={loading} />
+              </Grid>
+
+              {/* Recent AI Decisions */}
+              <Grid xs={12} md={6}>
+                <AIDecisionsWidget 
+                  decisions={recentDecisions} 
+                  loading={loading}
+                  onFeedbackSubmit={(decisionId, feedback) => {
+                    aiApi.submitFeedback(decisionId, feedback)
+                      .then(() => {
+                        console.log('✅ Feedback submitted');
+                        // Refresh decisions
+                        aiApi.getDecisions(undefined, 10).then(setRecentDecisions);
+                      })
+                      .catch(error => {
+                        console.error('❌ Failed to submit feedback:', error);
+                      });
+                  }}
+                />
+              </Grid>
+            </Grid>
           </Grid>
 
-          {/* Recent AI Decisions */}
-          <Grid xs={12} lg={6}>
-            <AIDecisionsWidget 
-              decisions={recentDecisions} 
-              loading={loading}
-              onFeedbackSubmit={(decisionId, feedback) => {
-                aiApi.submitFeedback(decisionId, feedback)
-                  .then(() => {
-                    console.log('✅ Feedback submitted');
-                    // Refresh decisions
-                    aiApi.getDecisions(undefined, 10).then(setRecentDecisions);
-                  })
-                  .catch(error => {
-                    console.error('❌ Failed to submit feedback:', error);
-                  });
-              }}
-            />
-          </Grid>
-
-          {/* E*TRADE Account */}
-          <Grid xs={12} lg={6}>
-            <ETradeWidget />
-          </Grid>
-
-          {/* E*TRADE Trading */}
-          <Grid xs={12} lg={6}>
-            <ETradeTradeWidget />
-          </Grid>
-
-          {/* System Status */}
+          {/* E*TRADE Account and Trading */}
           <Grid xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  <ShowChart sx={{ mr: 1 }} />
-                  System Status
-                </Typography>
-                <Grid container spacing={2}>
-                  <Grid xs={6} sm={3}>
-                    <Typography variant="body2" color="text.secondary">
-                      WebSocket Status
-                    </Typography>
-                    <Chip 
-                      label={connectionStatus}
-                      color={getConnectionStatusColor()}
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid xs={6} sm={3}>
-                    <Typography variant="body2" color="text.secondary">
-                      Watchlist Symbols
-                    </Typography>
-                    <Typography variant="body1">
-                      {watchlist.length}
-                    </Typography>
-                  </Grid>
-                  <Grid xs={6} sm={3}>
-                    <Typography variant="body2" color="text.secondary">
-                      Recent Decisions
-                    </Typography>
-                    <Typography variant="body1">
-                      {recentDecisions.length}
-                    </Typography>
-                  </Grid>
-                  <Grid xs={6} sm={3}>
-                    <Typography variant="body2" color="text.secondary">
-                      Last Updated
-                    </Typography>
-                    <Typography variant="body1">
-                      {new Date().toLocaleTimeString()}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
+            <Grid container spacing={3}>
+              {/* E*TRADE Account */}
+              <Grid xs={12} md={6}>
+                <ETradeWidget />
+              </Grid>
+
+              {/* E*TRADE Trading */}
+              <Grid xs={12} md={6}>
+                <ETradeTradeWidget />
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Box>
 
-      {/* Floating Action Button for AI Analysis */}
+      {/* Floating Action Button for AI Chat */}
       <Fab 
         color="primary" 
-        aria-label="ai-analysis"
-        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+        aria-label="ai-chat"
+        sx={{ 
+          position: 'fixed', 
+          bottom: 24, 
+          right: 24,
+          width: 64,
+          height: 64,
+          boxShadow: '0 8px 32px rgba(59, 130, 246, 0.3)',
+          '&:hover': {
+            transform: 'scale(1.05)',
+            transition: 'transform 0.2s ease-in-out',
+          }
+        }}
         onClick={() => setAiAnalysisOpen(true)}
       >
-        <Psychology />
+        <Chat sx={{ fontSize: 28 }} />
       </Fab>
 
       {/* AI Analysis Dialog */}

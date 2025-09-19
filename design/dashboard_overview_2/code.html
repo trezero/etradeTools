@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+        :root {
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-200: #bfdbfe;
+            --primary-300: #93c5fd;
+            --primary-400: #60a5fa;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+            --primary-800: #1e40af;
+            --primary-900: #1e3a8a;
+            --primary-950: #172554;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+<div class="relative flex size-full min-h-screen flex-col bg-[#111827] dark group/design-root" style='font-family: Inter, "Noto Sans", sans-serif;'>
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-700 px-10 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-white">
+<svg class="size-8 text-[var(--primary-500)]" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_535)">
+<path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clipPath id="clip0_6_535">
+<rect fill="white" height="48" width="48"></rect>
+</clipPath>
+</defs>
+</svg>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">Investr</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-gray-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Dashboard</a>
+<a class="text-gray-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Portfolio</a>
+<a class="text-gray-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Research</a>
+<a class="text-gray-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">News</a>
+<a class="text-gray-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Watchlist</a>
+</nav>
+</div>
+<div class="flex flex-1 items-center justify-end gap-4">
+<label class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"> search </span>
+<input class="form-input w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] border-none bg-gray-800 focus:border-none h-10 placeholder:text-gray-400 pl-10 text-sm font-normal leading-normal" placeholder="Search" value=""/>
+</label>
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-md bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors">
+<span class="material-symbols-outlined"> notifications </span>
+</button>
+<button class="relative">
+<img alt="User avatar" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2x4RdocOqrpGavcbNUiE42sN9P8Ksr0A6yxCdFf7J-Sgd6u_dH14VyLsUrh4aKdRNkPVyhxR3AvFN4sJc8K1pQzR0bFwHfk3FM_JYBa0blIRBbPZAVay7ZTaFkvpWwQD00sEct9iziXBiXhpisnYg2gAgtpPuDXj3Su4iP1OzB6vPbGAyFMVaBHedTO4DJdJINRuAHqqY7pbpqmyK8MxjnJk7mYlrcPhuKeWYICLOQ2Y7reHyrH87LIDVUxmCb0rfEzs3tXnz2XU"/>
+<span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-gray-900"></span>
+</button>
+</div>
+</header>
+<main class="flex-1 px-4 sm:px-6 lg:px-10 py-8">
+<div class="mx-auto max-w-7xl">
+<div class="mb-8">
+<h1 class="text-white text-3xl font-bold leading-tight tracking-tight">Dashboard</h1>
+</div>
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+<div class="flex flex-col gap-2 rounded-lg p-5 bg-gray-800 shadow-lg">
+<p class="text-gray-400 text-sm font-medium">Total Value</p>
+<p class="text-white text-2xl font-bold">$123,456.78</p>
+<div class="flex items-center gap-1 text-green-500">
+<span class="material-symbols-outlined text-base"> trending_up </span>
+<p class="text-sm font-medium">+1.00%</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-lg p-5 bg-gray-800 shadow-lg">
+<p class="text-gray-400 text-sm font-medium">Day's Change</p>
+<p class="text-white text-2xl font-bold">+$1,234.56</p>
+<div class="flex items-center gap-1 text-green-500">
+<span class="material-symbols-outlined text-base"> trending_up </span>
+<p class="text-sm font-medium">+1.25%</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-lg p-5 bg-gray-800 shadow-lg">
+<p class="text-gray-400 text-sm font-medium">Total Return</p>
+<p class="text-white text-2xl font-bold">+$12,345.67</p>
+<div class="flex items-center gap-1 text-green-500">
+<span class="material-symbols-outlined text-base"> trending_up </span>
+<p class="text-sm font-medium">+10.00%</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-lg p-5 bg-gray-800 shadow-lg">
+<p class="text-gray-400 text-sm font-medium">Available Cash</p>
+<p class="text-white text-2xl font-bold">$10,000.00</p>
+<p class="text-gray-400 text-sm font-medium">-</p>
+</div>
+</div>
+<div class="mt-10">
+<div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
+<h2 class="text-white text-xl font-bold leading-tight">Positions</h2>
+<div class="flex flex-wrap items-center gap-2">
+<div class="relative w-full sm:w-auto">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"> search </span>
+<input class="form-input w-full sm:w-48 resize-none overflow-hidden rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] border-none bg-gray-800 focus:border-none h-9 placeholder:text-gray-400 pl-10 text-sm font-normal leading-normal" placeholder="Search Positions" value=""/>
+</div>
+<button class="flex items-center justify-center gap-2 h-9 px-3 rounded-md bg-[var(--primary-600)] text-white text-sm font-medium hover:bg-[var(--primary-700)] transition-colors">
+<span class="material-symbols-outlined text-xl"> add </span>
+<span class="hidden sm:inline">Add Trade</span>
+</button>
+<button class="flex items-center justify-center gap-2 h-9 px-3 rounded-md bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl"> file_upload </span>
+<span class="hidden sm:inline">Import CSV</span>
+</button>
+<button class="flex items-center justify-center gap-2 h-9 px-3 rounded-md bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl"> file_download </span>
+<span class="hidden sm:inline">Export CSV</span>
+</button>
+<button class="flex items-center justify-center h-9 w-9 rounded-md bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl"> refresh </span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="min-w-full divide-y divide-gray-700">
+<thead class="bg-gray-800">
+<tr>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" scope="col">Symbol</th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" scope="col">Qty</th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" scope="col">Avg Cost</th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" scope="col">Last</th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" scope="col">Day %</th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" scope="col">Unrealized P&amp;L</th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" scope="col">Aggressiveness</th>
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" scope="col">Actions</th>
+</tr>
+</thead>
+<tbody class="bg-gray-900 divide-y divide-gray-700">
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">AAPL</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">100</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">$150.00</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">$175.25</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-green-500">+1.50%</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-green-500">+$2,525.00</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-900 text-blue-300">Moderate</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+<a class="text-[var(--primary-400)] hover:text-[var(--primary-300)]" href="#">Trade</a>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">GOOGL</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">50</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">$2,800.00</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">$2,750.50</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-red-500">-0.75%</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-red-500">-$2,475.00</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-900 text-green-300">Conservative</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+<a class="text-[var(--primary-400)] hover:text-[var(--primary-300)]" href="#">Trade</a>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">TSLA</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">25</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">$900.00</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">$950.75</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-green-500">+2.10%</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-green-500">+$1,268.75</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-900 text-red-300">Aggressive</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+<a class="text-[var(--primary-400)] hover:text-[var(--primary-300)]" href="#">Trade</a>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">AMZN</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">30</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">$3,200.00</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">$3,150.00</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-red-500">-1.15%</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-red-500">-$1,500.00</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-900 text-blue-300">Moderate</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+<a class="text-[var(--primary-400)] hover:text-[var(--primary-300)]" href="#">Trade</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+
+</body></html>

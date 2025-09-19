@@ -32,6 +32,8 @@ import {
   Link,
   LinkOff,
   Refresh,
+  AccountBalanceWallet,
+  MoreVert,
 } from '@mui/icons-material';
 
 import api from '../services/api';
@@ -297,33 +299,31 @@ const ETradeWidget: React.FC = () => {
   }
 
   return (
-    <Card>
-      <CardHeader
-        title="E*TRADE Account"
-        subheader="Real-time portfolio and account information"
-        avatar={<AccountBalance />}
-        action={
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <IconButton 
-              onClick={loadAccounts} 
-              disabled={loading}
-              size="small"
-              title="Refresh"
-            >
+    <Card sx={{ bgcolor: 'background.paper' }}>
+      <CardContent sx={{ p: 3 }}>
+        {/* Header */}
+        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+          <Box display="flex" alignItems="center" gap={2}>
+            <AccountBalanceWallet sx={{ color: 'text.secondary' }} />
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                E*TRADE Account
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Real-time portfolio and account information
+              </Typography>
+            </Box>
+          </Box>
+          <Box>
+            <IconButton sx={{ color: 'text.secondary' }}>
               <Refresh />
             </IconButton>
-            <IconButton 
-              onClick={disconnectETrade} 
-              size="small"
-              title="Disconnect"
-            >
-              <LinkOff />
+            <IconButton sx={{ color: 'text.secondary', ml: 1 }}>
+              <MoreVert />
             </IconButton>
           </Box>
-        }
-      />
-      
-      <CardContent>
+        </Box>
+
         {error && (
           <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
             {error}
@@ -339,117 +339,35 @@ const ETradeWidget: React.FC = () => {
         {accounts.length > 0 && (
           <>
             {/* Account Selector */}
-            <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-              <InputLabel>Account</InputLabel>
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Account
+              </Typography>
               <Select
                 value={selectedAccount?.accountIdKey || ''}
-                label="Account"
                 onChange={handleAccountChange}
+                fullWidth
+                size="small"
+                sx={{
+                  bgcolor: 'rgba(128, 128, 128, 0.1)',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  '&:focus': {
+                    outline: 'none',
+                    borderColor: 'primary.main'
+                  }
+                }}
               >
                 {accounts.map((account) => (
                   <MenuItem key={account.accountIdKey} value={account.accountIdKey}>
-                    {account.accountDesc} ({account.accountId})
+                    Brokerage ({account.accountId})
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
-            
-            {selectedAccount && (
-              <>
-                {/* Balance Information */}
-                {balance && (
-                  <Box sx={{ mb: 3 }}>
-                    <Typography variant="h6" gutterBottom>
-                      Account Balance
-                    </Typography>
-                    
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Total Value:
-                      </Typography>
-                      <Typography variant="body2" fontWeight="bold">
-                        {formatCurrency(balance.Computed.RealTimeValues.totalAccountValue)}
-                      </Typography>
-                    </Box>
-                    
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Cash Balance:
-                      </Typography>
-                      <Typography variant="body2">
-                        {formatCurrency(balance.Computed.RealTimeValues.cashBalance)}
-                      </Typography>
-                    </Box>
-                    
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Margin Buying Power:
-                      </Typography>
-                      <Typography variant="body2">
-                        {formatCurrency(balance.Computed.marginBuyingPower)}
-                      </Typography>
-                    </Box>
-                    
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Cash Buying Power:
-                      </Typography>
-                      <Typography variant="body2">
-                        {formatCurrency(balance.Computed.cashBuyingPower)}
-                      </Typography>
-                    </Box>
-                  </Box>
-                )}
-                
-                <Divider sx={{ my: 2 }} />
-                
-                {/* Portfolio Positions */}
-                {portfolio && portfolio.AccountPortfolio && portfolio.AccountPortfolio.length > 0 && (
-                  <Box>
-                    <Typography variant="h6" gutterBottom>
-                      Portfolio Positions
-                    </Typography>
-                    
-                    <List dense>
-                      {portfolio.AccountPortfolio[0].Position.map((position, index) => (
-                        <ListItem key={index}>
-                          <ListItemText
-                            primary={`${position.symbolDescription} (${position.quantity} shares)`}
-                            secondary={
-                              <>
-                                <Typography component="span" variant="body2" color="text.primary">
-                                  {formatCurrency(position.marketValue)}
-                                </Typography>
-                                {" - "}
-                                <Typography component="span" variant="body2" color={position.totalGain >= 0 ? "success.main" : "error.main"}>
-                                  {position.totalGain >= 0 ? '+' : ''}{formatCurrency(position.totalGain)}
-                                </Typography>
-                              </>
-                            }
-                          />
-                          <ListItemSecondaryAction>
-                            <Chip 
-                              label={formatPercentage(position.marketValue, balance?.Computed.RealTimeValues.totalAccountValue || 1)} 
-                              size="small" 
-                            />
-                          </ListItemSecondaryAction>
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Box>
-                )}
-                
-                {portfolio && (!portfolio.AccountPortfolio || portfolio.AccountPortfolio.length === 0) && (
-                  <Typography variant="body2" color="text.secondary" align="center" sx={{ py: 2 }}>
-                    No positions in portfolio
-                  </Typography>
-                )}
-              </>
-            )}
+            </Box>
           </>
         )}
       </CardContent>
-      
     </Card>
   );
 };

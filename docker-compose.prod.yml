@@ -7,13 +7,13 @@ services:
     container_name: etrade_redis_prod
     restart: always
     ports:
-      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:6379:6380"
     volumes:
       - redis_prod_data:/data
       - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
     command: redis-server /usr/local/etc/redis/redis.conf
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-p", "6380", "ping"]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -141,9 +141,8 @@ services:
       target: production
     container_name: etrade_frontend_prod
     restart: always
-    ports:
-      - "80:80"
-      - "443:443"
+    expose:
+      - "80"
     depends_on:
       backend:
         condition: service_healthy

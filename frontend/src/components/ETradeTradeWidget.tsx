@@ -28,7 +28,8 @@ import {
   PlayArrow,
   SwapHoriz,
   CheckCircle,
-  Error
+  Error,
+  Link
 } from '@mui/icons-material';
 
 import api from '../services/api';
@@ -199,30 +200,44 @@ const ETradeTradeWidget: React.FC = () => {
 
   if (!authStatus) {
     return (
-      <Card>
-        <CardHeader
-          title="E*TRADE Trading"
-          subheader="Connect your E*TRADE account to execute trades"
-          avatar={<SwapHoriz />}
-        />
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            Please connect your E*TRADE account in the E*TRADE Account widget first.
-          </Typography>
+      <Card sx={{ bgcolor: 'background.paper' }}>
+        <CardContent sx={{ p: 3 }}>
+          <Box display="flex" alignItems="center" gap={2} sx={{ mb: 3 }}>
+            <Link sx={{ color: 'text.secondary' }} />
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                E*TRADE Trading
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Connect your E*TRADE account to execute trades
+              </Typography>
+            </Box>
+          </Box>
+          <Box sx={{ textAlign: 'center', mt: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              Please connect your E*TRADE account in the E*TRADE Account widget first.
+            </Typography>
+          </Box>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card>
-      <CardHeader
-        title="E*TRADE Trading"
-        subheader="Execute trades with your E*TRADE account"
-        avatar={<SwapHoriz />}
-      />
-      
-      <CardContent>
+    <Card sx={{ bgcolor: 'background.paper' }}>
+      <CardContent sx={{ p: 3 }}>
+        <Box display="flex" alignItems="center" gap={2} sx={{ mb: 3 }}>
+          <Link sx={{ color: 'text.secondary' }} />
+          <Box>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              E*TRADE Trading
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Connect your E*TRADE account to execute trades
+            </Typography>
+          </Box>
+        </Box>
+
         {error && (
           <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
             {error}
@@ -245,111 +260,10 @@ const ETradeTradeWidget: React.FC = () => {
           </Box>
         )}
         
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {/* Account Selector */}
-          <FormControl fullWidth size="small">
-            <InputLabel>Account</InputLabel>
-            <Select
-              value={selectedAccount?.accountIdKey || ''}
-              label="Account"
-              onChange={handleAccountChange}
-            >
-              {accounts.map((account) => (
-                <MenuItem key={account.accountIdKey} value={account.accountIdKey}>
-                  {account.accountDesc} ({account.accountId})
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          
-          {/* Symbol Input */}
-          <TextField
-            label="Symbol"
-            value={symbol}
-            onChange={(e) => setSymbol(e.target.value)}
-            placeholder="e.g. AAPL"
-            size="small"
-            inputProps={{ style: { textTransform: 'uppercase' } }}
-          />
-          
-          {/* Order Action */}
-          <FormControl fullWidth size="small">
-            <InputLabel>Order Action</InputLabel>
-            <Select
-              value={orderAction}
-              label="Order Action"
-              onChange={(e) => setOrderAction(e.target.value)}
-            >
-              <MenuItem value="BUY">Buy</MenuItem>
-              <MenuItem value="SELL">Sell</MenuItem>
-              <MenuItem value="BUY_TO_COVER">Buy to Cover</MenuItem>
-              <MenuItem value="SELL_SHORT">Sell Short</MenuItem>
-            </Select>
-          </FormControl>
-          
-          {/* Quantity */}
-          <TextField
-            label="Quantity"
-            type="number"
-            value={quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-            size="small"
-          />
-          
-          {/* Price Type */}
-          <FormControl fullWidth size="small">
-            <InputLabel>Price Type</InputLabel>
-            <Select
-              value={priceType}
-              label="Price Type"
-              onChange={(e) => {
-                setPriceType(e.target.value);
-                if (e.target.value !== 'LIMIT') {
-                  setLimitPrice(null);
-                }
-              }}
-            >
-              <MenuItem value="MARKET">Market</MenuItem>
-              <MenuItem value="LIMIT">Limit</MenuItem>
-            </Select>
-          </FormControl>
-          
-          {/* Limit Price (only for LIMIT orders) */}
-          {priceType === 'LIMIT' && (
-            <TextField
-              label="Limit Price"
-              type="number"
-              value={limitPrice || ''}
-              onChange={(e) => setLimitPrice(parseFloat(e.target.value) || null)}
-              size="small"
-            />
-          )}
-          
-          {/* Order Term (only for LIMIT orders) */}
-          {priceType === 'LIMIT' && (
-            <FormControl fullWidth size="small">
-              <InputLabel>Order Term</InputLabel>
-              <Select
-                value={orderTerm}
-                label="Order Term"
-                onChange={(e) => setOrderTerm(e.target.value)}
-              >
-                <MenuItem value="GOOD_FOR_DAY">Good for Day</MenuItem>
-                <MenuItem value="IMMEDIATE_OR_CANCEL">Immediate or Cancel</MenuItem>
-                <MenuItem value="FILL_OR_KILL">Fill or Kill</MenuItem>
-              </Select>
-            </FormControl>
-          )}
-          
-          {/* Preview Button */}
-          <Button
-            variant="contained"
-            startIcon={<PlayArrow />}
-            onClick={previewOrder}
-            disabled={!selectedAccount || !symbol || loading}
-          >
-            Preview Order
-          </Button>
+        <Box sx={{ textAlign: 'center', mt: 3 }}>
+          <Typography variant="body2" color="text.secondary">
+            Please connect your E*TRADE account in the E*TRADE Account widget first.
+          </Typography>
         </Box>
       </CardContent>
       

@@ -1,29 +1,20 @@
 // Watchlist widget showing tracked symbols
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Card,
   CardContent,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
   Box,
-  Chip,
   CircularProgress,
-  IconButton,
-  Tooltip,
-  LinearProgress,
-  Collapse
+  IconButton
 } from '@mui/material';
 import {
   Visibility,
-  ExpandMore,
-  ExpandLess,
-  Psychology,
   TrendingUp,
   TrendingDown,
-  TrendingFlat
+  Analytics,
+  Error as ErrorIcon
 } from '@mui/icons-material';
 
 import { WatchlistItem } from '../types';
@@ -39,75 +30,43 @@ const WatchlistWidget: React.FC<WatchlistWidgetProps> = ({
   loading, 
   onAnalyzeSymbol 
 }) => {
-  const [expandedSymbol, setExpandedSymbol] = useState<string | null>(null);
 
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(value);
+  const formatPrice = (price: number): string => {
+    return price.toFixed(2);
   };
 
-  const formatPercentage = (value: number): string => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'percent',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-      signDisplay: 'always'
-    }).format(value / 100);
+  const formatChange = (change: number, changePercent: number): string => {
+    const sign = change >= 0 ? '+' : '';
+    return `${sign}${change.toFixed(2)} (${sign}${changePercent.toFixed(2)}%)`;
   };
 
-  const getTrendIcon = (changePercent: number) => {
-    if (changePercent > 0.5) return <TrendingUp color="success" fontSize="small" />;
-    if (changePercent < -0.5) return <TrendingDown color="error" fontSize="small" />;
-    return <TrendingFlat color="disabled" fontSize="small" />;
-  };
-
-  const getTrendColor = (changePercent: number): 'success' | 'error' | 'default' => {
-    if (changePercent > 0) return 'success';
-    if (changePercent < 0) return 'error';
-    return 'default';
-  };
-
-    const getRSIChipColor = (rsi?: number): 'success' | 'warning' | 'error' | 'default' => {
-    if (!rsi) return 'default';
-    if (rsi > 70) return 'error';  // Overbought
-    if (rsi < 30) return 'success'; // Oversold
-    if (rsi > 60 || rsi < 40) return 'warning';
-    return 'default';
-  };
-
-  const getRSILinearProgressColor = (rsi?: number): 'success' | 'warning' | 'error' | 'inherit' => {
-    if (!rsi) return 'inherit';
-    if (rsi > 70) return 'error';  // Overbought
-    if (rsi < 30) return 'success'; // Oversold
-    if (rsi > 60 || rsi < 40) return 'warning';
-    return 'inherit';
-  };
-
-  const getRSILabel = (rsi?: number): string => {
-    if (!rsi) return 'N/A';
-    if (rsi > 70) return 'Overbought';
-    if (rsi < 30) return 'Oversold';
-    return 'Normal';
-  };
-
-  const handleSymbolClick = (symbol: string) => {
-    setExpandedSymbol(expandedSymbol === symbol ? null : symbol);
+  const getChangeColor = (change: number): string => {
+    return change >= 0 ? '#0ECB81' : '#F6465D';
   };
 
   if (loading) {
     return (
-      <Card>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            <Visibility sx={{ mr: 1 }} />
-            Watchlist
-          </Typography>
+      <Card sx={{ 
+        bgcolor: '#1A1E29', 
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 2
+      }}>
+        <CardContent sx={{ p: 3 }}>
+          <Box display="flex" alignItems="center" sx={{ mb: 3 }}>
+            <Visibility sx={{ mr: 1.5, color: '#6B7280' }} />
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontWeight: 600, 
+                color: '#F9FAFB',
+                fontFamily: 'Inter, system-ui, sans-serif'
+              }}
+            >
+              Watchlist
+            </Typography>
+          </Box>
           <Box display="flex" justifyContent="center" alignItems="center" height={200}>
-            <CircularProgress />
+            <CircularProgress sx={{ color: '#3B82F6' }} />
           </Box>
         </CardContent>
       </Card>
@@ -116,203 +75,239 @@ const WatchlistWidget: React.FC<WatchlistWidgetProps> = ({
 
   if (!data || data.length === 0) {
     return (
-      <Card>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            <Visibility sx={{ mr: 1 }} />
-            Watchlist
-          </Typography>
-          <Typography color="text.secondary" align="center" sx={{ py: 4 }}>
-            No watchlist symbols configured
-          </Typography>
-          <Typography variant="body2" color="text.secondary" align="center">
-            Add symbols to your watchlist in preferences
-          </Typography>
+      <Card sx={{ 
+        bgcolor: '#1A1E29', 
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: 2
+      }}>
+        <CardContent sx={{ p: 3 }}>
+          <Box display="flex" alignItems="center" sx={{ mb: 3 }}>
+            <Visibility sx={{ mr: 1.5, color: '#6B7280' }} />
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontWeight: 600, 
+                color: '#F9FAFB',
+                fontFamily: 'Inter, system-ui, sans-serif'
+              }}
+            >
+              Watchlist
+            </Typography>
+          </Box>
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Visibility sx={{ fontSize: 48, color: '#6B7280', mb: 2 }} />
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                color: '#9CA3AF', 
+                mb: 1,
+                fontFamily: 'Inter, system-ui, sans-serif'
+              }}
+            >
+              No watchlist symbols configured
+            </Typography>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: '#6B7280',
+                fontFamily: 'Inter, system-ui, sans-serif'
+              }}
+            >
+              Add symbols to your watchlist in preferences
+            </Typography>
+          </Box>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          <Visibility sx={{ mr: 1 }} />
-          Watchlist ({data.length})
-        </Typography>
+    <Card sx={{ 
+      bgcolor: '#1A1E29', 
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      borderRadius: 2
+    }}>
+      <CardContent sx={{ p: 3 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+          <Box display="flex" alignItems="center">
+            <Visibility sx={{ mr: 1.5, color: '#6B7280' }} />
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontWeight: 600, 
+                color: '#F9FAFB',
+                fontFamily: 'Inter, system-ui, sans-serif'
+              }}
+            >
+              Watchlist
+            </Typography>
+          </Box>
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              color: '#6B7280',
+              fontFamily: 'IBM Plex Mono, monospace',
+              bgcolor: 'rgba(59, 130, 246, 0.1)',
+              px: 1.5,
+              py: 0.5,
+              borderRadius: 1
+            }}
+          >
+            {data.length} symbols
+          </Typography>
+        </Box>
 
-        <List dense>
+        <Box sx={{ '& > *:not(:last-child)': { mb: 2 } }}>
           {data.map((item) => {
             if ('error' in item || !item.quote) {
               return (
-                <ListItem key={item.symbol}>
-                  <ListItemText
-                    primary={item.symbol}
-                    secondary="Error loading data"
-                  />
-                </ListItem>
+                <Box 
+                  key={item.symbol}
+                  sx={{
+                    p: 2.5,
+                    bgcolor: 'rgba(244, 70, 93, 0.1)',
+                    border: '1px solid rgba(244, 70, 93, 0.2)',
+                    borderRadius: 1.5,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <Box display="flex" alignItems="center">
+                    <ErrorIcon sx={{ mr: 1.5, color: '#F6465D', fontSize: 20 }} />
+                    <Box>
+                      <Typography 
+                        variant="body1" 
+                        sx={{ 
+                          fontWeight: 600, 
+                          mb: 0.5,
+                          color: '#F9FAFB',
+                          fontFamily: 'Inter, system-ui, sans-serif'
+                        }}
+                      >
+                        {item.symbol}
+                      </Typography>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#F6465D',
+                          fontFamily: 'Inter, system-ui, sans-serif'
+                        }}
+                      >
+                        Failed to load data
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      color: '#6B7280',
+                      fontFamily: 'IBM Plex Mono, monospace'
+                    }}
+                  >
+                    ERROR
+                  </Typography>
+                </Box>
               );
             }
 
-            const isExpanded = expandedSymbol === item.symbol;
-            const rsi = item.historical?.technical_indicators?.rsi;
+            const quote = item.quote;
+            const change = quote.change || 0;
+            const changePercent = quote.change_percent || 0;
+            const price = quote.current_price || 0;
 
             return (
-              <React.Fragment key={item.symbol}>
-                <ListItem
-                  sx={{ 
-                    cursor: 'pointer',
-                    '&:hover': { bgcolor: 'grey.50' },
-                    borderRadius: 1
-                  }}
-                  onClick={() => handleSymbolClick(item.symbol)}
-                >
-                  <ListItemText
-                    primary={
-                      <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <Box display="flex" alignItems="center" gap={1}>
-                          <Typography variant="body1" fontWeight="medium">
-                            {item.symbol}
-                          </Typography>
-                          {getTrendIcon(item.quote.change_percent)}
-                        </Box>
-                        <Typography variant="body1" fontWeight="medium">
-                          {formatCurrency(item.quote.current_price)}
-                        </Typography>
-                      </Box>
-                    }
-                    secondary={
-                      <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <Box display="flex" alignItems="center" gap={1}>
-                          <Chip
-                            label={formatPercentage(item.quote.change_percent)}
-                            color={getTrendColor(item.quote.change_percent)}
-                            size="small"
-                          />
-                          {rsi && (
-                            <Chip
-                              label={`RSI: ${rsi.toFixed(0)}`}
-                              color={getRSIChipColor(rsi)}
-                              size="small"
-                              variant="outlined"
-                            />
-                          )}
-                        </Box>
-                        <Box display="flex" alignItems="center">
-                          {onAnalyzeSymbol && (
-                            <Tooltip title="AI Analysis">
-                              <IconButton
-                                size="small"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onAnalyzeSymbol(item.symbol);
-                                }}
-                              >
-                                <Psychology fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          )}
-                          {isExpanded ? <ExpandLess /> : <ExpandMore />}
-                        </Box>
-                      </Box>
-                    }
-                  />
-                </ListItem>
-
-                <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                  <Box sx={{ pl: 2, pr: 2, pb: 2 }}>
-                    <Box display="flex" justifyContent="space-between" mb={1}>
-                      <Typography variant="caption" color="text.secondary">
-                        Day Range
-                      </Typography>
-                      <Typography variant="caption">
-                        {formatCurrency(item.quote.day_low)} - {formatCurrency(item.quote.day_high)}
-                      </Typography>
-                    </Box>
-
-                    <Box display="flex" justifyContent="space-between" mb={1}>
-                      <Typography variant="caption" color="text.secondary">
-                        Volume
-                      </Typography>
-                      <Typography variant="caption">
-                        {item.quote?.volume?.toLocaleString() ?? 'N/A'}
-                      </Typography>
-                    </Box>
-
-                    <Box display="flex" justifyContent="space-between" mb={1}>
-                      <Typography variant="caption" color="text.secondary">
-                        Market Cap
-                      </Typography>
-                      <Typography variant="caption">
-                        {item.quote.market_cap ? 
-                          `$${(item.quote.market_cap / 1e9).toFixed(1)}B` : 
-                          'N/A'
-                        }
-                      </Typography>
-                    </Box>
-
-                    <Box display="flex" justifyContent="space-between" mb={1}>
-                      <Typography variant="caption" color="text.secondary">
-                        P/E Ratio
-                      </Typography>
-                      <Typography variant="caption">
-                        {item.quote.pe_ratio ? item.quote.pe_ratio.toFixed(2) : 'N/A'}
-                      </Typography>
-                    </Box>
-
-                    {/* Technical Indicators */}
-                    {item.historical?.technical_indicators && (
-                      <Box mt={2}>
-                        <Typography variant="caption" color="text.secondary" display="block" mb={1}>
-                          Technical Indicators
-                        </Typography>
-                        
-                        {rsi && (
-                          <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                            <Typography variant="caption">RSI (14)</Typography>
-                            <Box display="flex" alignItems="center" gap={1}>
-                              <LinearProgress
-                                variant="determinate"
-                                value={rsi}
-                                sx={{ width: 60, height: 4 }}
-                                color={getRSILinearProgressColor(rsi)}
-                              />
-                              <Typography variant="caption">
-                                {rsi.toFixed(1)} ({getRSILabel(rsi)})
-                              </Typography>
-                            </Box>
-                          </Box>
-                        )}
-
-                        {item.historical.technical_indicators.sma_20 && (
-                          <Box display="flex" justifyContent="space-between" mb={1}>
-                            <Typography variant="caption">SMA 20</Typography>
-                            <Typography variant="caption">
-                              {formatCurrency(item.historical.technical_indicators.sma_20)}
-                            </Typography>
-                          </Box>
-                        )}
-
-                        {item.historical.technical_indicators.sma_50 && (
-                          <Box display="flex" justifyContent="space-between">
-                            <Typography variant="caption">SMA 50</Typography>
-                            <Typography variant="caption">
-                              {formatCurrency(item.historical.technical_indicators.sma_50)}
-                            </Typography>
-                          </Box>
-                        )}
-                      </Box>
-                    )}
-
-                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-                      {item.timestamp && `Updated: ${new Date(item.timestamp).toLocaleTimeString()}`}
+              <Box 
+                key={item.symbol}
+                sx={{
+                  p: 2.5,
+                  bgcolor: 'rgba(255, 255, 255, 0.02)',
+                  border: '1px solid rgba(255, 255, 255, 0.05)',
+                  borderRadius: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  '&:hover': {
+                    bgcolor: 'rgba(255, 255, 255, 0.05)',
+                    borderColor: 'rgba(59, 130, 246, 0.3)'
+                  }
+                }}
+              >
+                <Box display="flex" alignItems="center" flex={1}>
+                  {change >= 0 ? (
+                    <TrendingUp sx={{ mr: 1.5, color: '#0ECB81', fontSize: 20 }} />
+                  ) : (
+                    <TrendingDown sx={{ mr: 1.5, color: '#F6465D', fontSize: 20 }} />
+                  )}
+                  <Box flex={1}>
+                    <Typography 
+                      variant="body1" 
+                      sx={{ 
+                        fontWeight: 600, 
+                        mb: 0.5,
+                        color: '#F9FAFB',
+                        fontFamily: 'Inter, system-ui, sans-serif'
+                      }}
+                    >
+                      {item.symbol}
+                    </Typography>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        color: '#9CA3AF',
+                        fontFamily: 'Inter, system-ui, sans-serif'
+                      }}
+                    >
+                      {item.symbol} Stock
                     </Typography>
                   </Box>
-                </Collapse>
-              </React.Fragment>
+                </Box>
+
+                <Box display="flex" alignItems="center" gap={2}>
+                  <Box textAlign="right">
+                    <Typography 
+                      variant="body1" 
+                      sx={{ 
+                        fontWeight: 600,
+                        color: '#F9FAFB',
+                        fontFamily: 'IBM Plex Mono, monospace',
+                        mb: 0.5
+                      }}
+                    >
+                      ${formatPrice(price)}
+                    </Typography>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        color: getChangeColor(change),
+                        fontFamily: 'IBM Plex Mono, monospace',
+                        fontWeight: 500
+                      }}
+                    >
+                      {formatChange(change, changePercent)}
+                    </Typography>
+                  </Box>
+
+                  {onAnalyzeSymbol && (
+                    <IconButton
+                      size="small"
+                      onClick={() => onAnalyzeSymbol(item.symbol)}
+                      sx={{
+                        color: '#6B7280',
+                        '&:hover': {
+                          color: '#3B82F6',
+                          bgcolor: 'rgba(59, 130, 246, 0.1)'
+                        }
+                      }}
+                    >
+                      <Analytics fontSize="small" />
+                    </IconButton>
+                  )}
+                </Box>
+              </Box>
             );
           })}
-        </List>
+        </Box>
       </CardContent>
     </Card>
   );

@@ -1,0 +1,188 @@
+<html><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B600%3B700&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --primary-500: #1173d4;
+        --primary-600: #0a5ca5;
+      }
+    </style>
+</head>
+<body class="bg-gray-900">
+<div class="relative flex size-full min-h-screen flex-col bg-[#111827] text-white group/design-root" style='font-family: Inter, "Noto Sans", sans-serif;'>
+<div class="flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-700 px-10 py-4">
+<div class="flex items-center gap-4">
+<svg class="h-8 w-8 text-[var(--primary-500)]" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_330)">
+<path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clipPath id="clip0_6_330"><rect fill="white" height="48" width="48"></rect></clipPath>
+</defs>
+</svg>
+<h2 class="text-xl font-bold">Investment Platform</h2>
+</div>
+<div class="flex items-center gap-6">
+<nav class="flex items-center gap-6 text-sm font-medium text-gray-300">
+<a class="hover:text-white" href="#">Dashboard</a>
+<a class="hover:text-white" href="#">Trade</a>
+<a class="hover:text-white" href="#">Portfolio</a>
+<a class="hover:text-white" href="#">History</a>
+<a class="text-white" href="#">Settings</a>
+</nav>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuByHuZfhzVxH9ao1IV17P4rPCkG_UVOZOFMobnWzFTVDQr6RJ8cIMW4aJaPlw3JcewNKNMeBCYm6jY5aQUq-DG_5oMgHKX3tvx5o87A55-3QFGHsDOD-oSdEOqm4mQnVasv9HlMs-fkheeS2z_tXdyok48Imbho4KsDIBxo88kJrmt5TJPLaSZYdbA3qWr1om2230fP7jB1P8JA0ObV28eyc496XgBJMf42dPzaDnYnZim90uQ6Cjf70hcrnvwLjVFSy5uj3umvF2E");'></div>
+</div>
+</header>
+<main class="flex-1 px-10 py-8">
+<div class="mx-auto max-w-7xl">
+<h1 class="text-4xl font-bold tracking-tight">Settings</h1>
+<div class="mt-8 grid grid-cols-1 gap-12 lg:grid-cols-3">
+<div class="lg:col-span-1">
+<div class="rounded-lg bg-gray-800 p-6 shadow-lg">
+<h2 class="text-lg font-semibold">Global Settings</h2>
+<p class="mt-1 text-sm text-gray-400">Configure global settings for your trading account.</p>
+</div>
+</div>
+<div class="lg:col-span-2">
+<div class="rounded-lg bg-gray-800 p-6 shadow-lg">
+<div class="space-y-6">
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+<div>
+<label class="block text-sm font-medium text-gray-300" for="lot-matching">Lot Matching</label>
+<select class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-[var(--primary-500)] focus:ring-[var(--primary-500)] sm:text-sm" id="lot-matching" name="lot-matching">
+<option>FIFO</option>
+<option selected="">LIFO</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-300" for="base-currency">Base Currency</label>
+<select class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-[var(--primary-500)] focus:ring-[var(--primary-500)] sm:text-sm" id="base-currency" name="base-currency">
+<option>USD</option>
+<option>EUR</option>
+<option>GBP</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+<div>
+<label class="block text-sm font-medium text-gray-300" for="max-position-cap">Max Position % Cap</label>
+<input class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-[var(--primary-500)] focus:ring-[var(--primary-500)] sm:text-sm" id="max-position-cap" name="max-position-cap" type="text" value="25"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-300" for="daily-turnover">Daily Turnover %</label>
+<input class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-[var(--primary-500)] focus:ring-[var(--primary-500)] sm:text-sm" id="daily-turnover" name="daily-turnover" type="text" value="10"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-300" for="news-provider">News Provider</label>
+<div class="relative mt-1">
+<input class="block w-full rounded-md border-gray-600 bg-gray-700 text-gray-400 shadow-sm sm:text-sm" disabled="" id="news-provider" name="news-provider" type="text" value="Stitch News"/>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+<span class="material-symbols-outlined text-gray-400"> lock </span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+<div>
+<label class="block text-sm font-medium text-gray-300" for="api-key">API Key</label>
+<div class="relative mt-1">
+<input class="block w-full rounded-md border-gray-600 bg-gray-700 text-gray-400 shadow-sm sm:text-sm" disabled="" id="api-key" name="api-key" type="password" value="****************"/>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+<span class="material-symbols-outlined text-gray-400"> lock </span>
+</div>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-300" for="secret-key">Secret Key</label>
+<div class="relative mt-1">
+<input class="block w-full rounded-md border-gray-600 bg-gray-700 text-gray-400 shadow-sm sm:text-sm" disabled="" id="secret-key" name="secret-key" type="password" value="****************"/>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+<span class="material-symbols-outlined text-gray-400"> lock </span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between border-t border-gray-700 pt-6">
+<p class="text-sm font-medium text-gray-300">Market Holidays</p>
+<label class="relative inline-flex cursor-pointer items-center">
+<input checked="" class="peer sr-only" type="checkbox" value=""/>
+<div class="peer h-6 w-11 rounded-full bg-gray-600 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-[var(--primary-500)] peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[var(--primary-600)] rtl:peer-checked:after:-translate-x-full"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12">
+<h2 class="text-2xl font-bold">Per-Symbol Overrides</h2>
+<div class="mt-4 overflow-hidden rounded-lg bg-gray-800 shadow-lg">
+<div class="overflow-x-auto">
+<table class="min-w-full divide-y divide-gray-700">
+<thead class="bg-gray-800">
+<tr>
+<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400" scope="col">Symbol</th>
+<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400" scope="col">Aggressiveness</th>
+<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400" scope="col">Notes</th>
+<th class="relative px-6 py-3" scope="col"><span class="sr-only">Edit</span></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-700 bg-gray-800">
+<tr>
+<td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-white">AAPL</td>
+<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-300">
+<div class="inline-flex rounded-md shadow-sm" role="group">
+<button class="rounded-l-lg border border-gray-600 bg-gray-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-600" type="button">1</button>
+<button class="border-y border-gray-600 bg-[var(--primary-500)] px-3 py-1.5 text-sm font-medium text-white hover:bg-[var(--primary-600)]" type="button">2</button>
+<button class="rounded-r-md border border-gray-600 bg-gray-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-600" type="button">3</button>
+</div>
+</td>
+<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-300">Long-term growth</td>
+<td class="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+<a class="text-[var(--primary-500)] hover:text-[var(--primary-600)]" href="#">Edit</a>
+</td>
+</tr>
+<tr>
+<td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-white">TSLA</td>
+<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-300">
+<div class="inline-flex rounded-md shadow-sm" role="group">
+<button class="rounded-l-lg border border-gray-600 bg-gray-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-600" type="button">1</button>
+<button class="border-y border-gray-600 bg-gray-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-600" type="button">2</button>
+<button class="rounded-r-md border border-gray-600 bg-[var(--primary-500)] px-3 py-1.5 text-sm font-medium text-white hover:bg-[var(--primary-600)]" type="button">3</button>
+</div>
+</td>
+<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-300">High volatility</td>
+<td class="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+<a class="text-[var(--primary-500)] hover:text-[var(--primary-600)]" href="#">Edit</a>
+</td>
+</tr>
+<tr>
+<td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-white">MSFT</td>
+<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-300">
+<div class="inline-flex rounded-md shadow-sm" role="group">
+<button class="rounded-l-lg border border-gray-600 bg-[var(--primary-500)] px-3 py-1.5 text-sm font-medium text-white hover:bg-[var(--primary-600)]" type="button">1</button>
+<button class="border-y border-gray-600 bg-gray-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-600" type="button">2</button>
+<button class="rounded-r-md border border-gray-600 bg-gray-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-600" type="button">3</button>
+</div>
+</td>
+<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-300">Stable investment</td>
+<td class="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+<a class="text-[var(--primary-500)] hover:text-[var(--primary-600)]" href="#">Edit</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+
+</body></html>

@@ -7,7 +7,6 @@ import {
   Typography,
   Grid,
   Box,
-  Chip,
   CircularProgress,
   Paper
 } from '@mui/material';
@@ -59,41 +58,70 @@ const MarketOverviewWidget: React.FC<MarketOverviewWidgetProps> = ({ data, loadi
   const renderIndexCard = (name: string, index: MarketIndex | { error: string }) => {
     if ('error' in index) {
       return (
-        <Paper key={name} sx={{ p: 2, bgcolor: 'grey.100' }}>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
+        <Box key={name} sx={{ textAlign: 'center' }}>
+          <Typography 
+            variant="body2" 
+            color="text.secondary" 
+            sx={{ fontSize: '0.875rem', mb: 1 }}
+          >
             {name}
           </Typography>
-          <Typography variant="caption" color="error">
-            Error loading data
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              fontFamily: '"IBM Plex Mono", monospace',
+              fontWeight: 500,
+              mb: 1,
+              color: 'text.primary'
+            }}
+          >
+            $0.00
           </Typography>
-        </Paper>
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              fontFamily: '"IBM Plex Mono", monospace',
+              color: 'error.main',
+              fontSize: '0.875rem'
+            }}
+          >
+            +0.00%
+          </Typography>
+        </Box>
       );
     }
 
     return (
-      <Paper key={name} sx={{ p: 2, cursor: 'pointer', '&:hover': { bgcolor: 'grey.50' } }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-          <Typography variant="body2" color="text.secondary">
-            {name}
-          </Typography>
-          {getTrendIcon(index.change_percent)}
-        </Box>
-        
-        <Typography variant="h6" component="div" gutterBottom>
+      <Box key={name} sx={{ textAlign: 'center' }}>
+        <Typography 
+          variant="body2" 
+          color="text.secondary" 
+          sx={{ fontSize: '0.875rem', mb: 1 }}
+        >
+          {name}
+        </Typography>
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            fontFamily: '"IBM Plex Mono", monospace',
+            fontWeight: 500,
+            mb: 1,
+            color: 'text.primary'
+          }}
+        >
           {name === 'VIX' ? index.price.toFixed(2) : formatCurrency(index.price)}
         </Typography>
-        
-        <Box display="flex" alignItems="center" gap={1}>
-          <Chip
-            label={formatPercentage(index.change_percent)}
-            color={getTrendColor(index.change_percent)}
-            size="small"
-          />
-          <Typography variant="caption" color="text.secondary">
-            {index.change > 0 ? '+' : ''}{index.change.toFixed(2)}
-          </Typography>
-        </Box>
-      </Paper>
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            fontFamily: '"IBM Plex Mono", monospace',
+            color: index.change_percent >= 0 ? 'success.main' : 'error.main',
+            fontSize: '0.875rem'
+          }}
+        >
+          {index.change_percent >= 0 ? '+' : ''}{formatPercentage(index.change_percent)}
+        </Typography>
+      </Box>
     );
   };
 
@@ -129,32 +157,34 @@ const MarketOverviewWidget: React.FC<MarketOverviewWidgetProps> = ({ data, loadi
     );
   }
 
-  // Calculate overall market sentiment
+  // Get indices data
   const indices = Object.entries(data).filter(([key]) => key !== 'timestamp');
-  const positiveIndices = indices.filter(([, index]) => 
-    typeof index === 'object' && 'change_percent' in index && index.change_percent > 0
-  ).length;
-  
-  const overallSentiment = positiveIndices / indices.length;
-  const sentimentColor = overallSentiment >= 0.6 ? 'success' : overallSentiment >= 0.4 ? 'warning' : 'error';
-  const sentimentText = overallSentiment >= 0.6 ? 'Bullish' : overallSentiment >= 0.4 ? 'Mixed' : 'Bearish';
 
   return (
-    <Card>
-      <CardContent>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-          <Typography variant="h6">
-            <ShowChart sx={{ mr: 1 }} />
-            Market Overview
-          </Typography>
-          <Chip
-            label={`${sentimentText} Market`}
-            color={sentimentColor}
-            variant="outlined"
-          />
-        </Box>
+    <Card sx={{ bgcolor: 'background.paper' }}>
+      <CardContent sx={{ p: 3 }}>
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            mb: 3,
+            fontWeight: 600,
+            color: 'text.primary'
+          }}
+        >
+          Market Overview
+        </Typography>
 
-        <Grid container spacing={2}>
+        <Grid 
+          container 
+          spacing={4} 
+          sx={{ 
+            mb: 2,
+            '& > .MuiGrid-item': {
+              display: 'flex',
+              justifyContent: 'center'
+            }
+          }}
+        >
           {indices.map(([name, index]) => (
             <Grid xs={12} sm={6} md={4} lg={2.4} key={name}>
               {renderIndexCard(name, index)}
@@ -162,8 +192,16 @@ const MarketOverviewWidget: React.FC<MarketOverviewWidgetProps> = ({ data, loadi
           ))}
         </Grid>
 
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
-          Last updated: {new Date(data.timestamp).toLocaleTimeString()}
+        <Typography 
+          variant="caption" 
+          color="text.secondary" 
+          sx={{ 
+            mt: 2, 
+            display: 'block',
+            fontSize: '0.75rem'
+          }}
+        >
+          Last updated: {data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString()}
         </Typography>
       </CardContent>
     </Card>

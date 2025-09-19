@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WealthPath - Sign Up</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+    :root {
+      --brand-primary: #1F2937;
+      --brand-secondary: #4B5563;
+      --brand-accent: #38BDF8;
+      --brand-surface: #111827;
+      --brand-text-primary: #F9FAFB;
+      --brand-text-secondary: #D1D5DB;
+      --brand-text-placeholder: #9CA3AF;
+    }
+    body {
+      font-family: 'Spline Sans', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-[var(--brand-surface)] text-[var(--brand-text-primary)]">
+<div class="flex flex-col items-center justify-center min-h-screen p-4">
+<div class="w-full max-w-md">
+<div class="flex justify-center mb-8">
+<div class="flex items-center gap-3">
+<svg fill="none" height="32" viewBox="0 0 48 48" width="32" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_330)">
+<path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="var(--brand-accent)" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clipPath id="clip0_6_330"><rect fill="white" height="48" width="48"></rect></clipPath>
+</defs>
+</svg>
+<h1 class="text-2xl font-bold">WealthPath</h1>
+</div>
+</div>
+<div class="bg-[var(--brand-primary)] p-8 rounded-2xl shadow-2xl">
+<div class="text-center mb-8">
+<h2 class="text-3xl font-bold tracking-tight">Create your account</h2>
+<p class="text-[var(--brand-text-secondary)] mt-2">Start your journey to financial freedom.</p>
+</div>
+<form class="space-y-6">
+<div>
+<label class="sr-only" for="email">Email</label>
+<input class="w-full h-12 px-4 bg-[var(--brand-secondary)] border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-accent)] placeholder:text-[var(--brand-text-placeholder)]" id="email" name="email" placeholder="Email address" type="email"/>
+</div>
+<div>
+<label class="sr-only" for="password">Password</label>
+<div class="relative">
+<input class="w-full h-12 px-4 pr-12 bg-[var(--brand-secondary)] border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-accent)] placeholder:text-[var(--brand-text-placeholder)]" id="password" name="password" placeholder="Password" type="password"/>
+<button class="absolute inset-y-0 right-0 flex items-center px-4 text-[var(--brand-text-placeholder)] hover:text-[var(--brand-accent)]" type="button">
+<span class="material-symbols-outlined">
+                  visibility
+                </span>
+</button>
+</div>
+</div>
+<button class="w-full h-12 px-6 bg-[var(--brand-accent)] text-white font-bold rounded-lg hover:bg-opacity-90 transition-colors shadow-lg shadow-sky-500/20" type="submit">
+            Sign up
+          </button>
+</form>
+<div class="mt-8 text-center">
+<p class="text-[var(--brand-text-secondary)]">Already have an account? <a class="font-medium text-[var(--brand-accent)] hover:underline" href="#">Log in</a></p>
+</div>
+</div>
+<div class="mt-8 text-center">
+<p class="text-xs text-[var(--brand-text-secondary)] max-w-xs mx-auto">
+          By signing up, you agree to our <a class="underline hover:text-white" href="#">Terms of Service</a> and <a class="underline hover:text-white" href="#">Privacy Policy</a>.
+        </p>
+</div>
+</div>
+</div>
+
+</body></html>
